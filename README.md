@@ -14,15 +14,17 @@ file transfer resume, http proxy tunneling and more!
 Installation
 ============
 
+* Since Net::Curl uses libcurl, libcurl.so must be found in /usr/lib. To install libcurl on Debian for example, please use the following command:
+
+	sudo apt-get install libcurl3-dev
+
 * Using panda (a module management tool bundled with Rakudo Star):
 
 	panda install Net::Curl
 
-* Using ufo and make:
+* Using ufo (a project Makefile creation script bundled with Rakudo Star) and make:
 
-    git clone git://github.com/azawawi/perl6-net-curl.git
-    cd perl6-net-curl
-    ufo                      # Create Makefile
+    ufo                    
     make
     make test
     make install
