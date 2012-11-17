@@ -20,12 +20,12 @@ Installation
 
 * Using ufo and make:
 
-	git clone git://github.com/azawawi/perl6-net-curl.git
-	cd perl6-net-curl
-	ufo                      # Create Makefile
-	make
-	make test
-	make install
+    git clone git://github.com/azawawi/perl6-net-curl.git
+    cd perl6-net-curl
+    ufo                      # Create Makefile
+    make
+    make test
+    make install
 
 ## Testing
 
