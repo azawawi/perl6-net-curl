@@ -1,17 +1,16 @@
 #!/usr/bin/env perl6
 use v6;
 
+BEGIN { @*INC.push('lib') };
+
 use Net::Curl;
 
-my $curl;
-my $res;
- 
-$curl = curl_easy_init;
+my $curl = curl_easy_init;
 if $curl {
-    curl_easy_setopt($curl, CURLOPT_URL, "http://example.com");
+    curl_easy_setopt($curl, CURLOPT_URL, 'http://example.com');
  
     # Perform the request, res will get the return code
-    $res = curl_easy_perform($curl);
+    my $res = curl_easy_perform($curl);
 
     # Check for errors
     if $res != CURLE_OK {
