@@ -25,7 +25,7 @@ if $curl {
 # If you have a CA cert for the server stored someplace else than in the
 # default bundle, then the CURLOPT_CAPATH option might come handy for
 # you.
-	  	curl_easy_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0L);
+	  	curl_easy_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 	}
 
 	if SKIP_HOSTNAME_VERIFICATION {
@@ -33,7 +33,7 @@ if $curl {
 # they have mentioned in their server certificate's commonName (or
 # subjectAltName) fields, libcurl will refuse to connect. You can skip
 # this check, but this will make the connection less secure.
-	    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+	    curl_easy_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
 	}
 
     # Perform the request, res will get the return code
