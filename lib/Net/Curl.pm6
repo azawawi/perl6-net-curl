@@ -48,7 +48,7 @@ sub curl_easy_version()
 	is export { ... };
 
 # Extract information from a curl handle
-sub curl_easy_getinfo(OpaquePointer, int, CArray[int])
+sub curl_easy_getinfo(OpaquePointer, int, CArray[Str])
 	returns int
 	is native(LIB)
 	is export { ... };
