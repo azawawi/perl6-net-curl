@@ -12,10 +12,9 @@ constant CURLINFO_STRING                  = 0x100000;
 constant CURLOPT_URL is export            = 10002;
 constant CURLE_OK    is export            = 0;
 constant CURLINFO_CONTENT_TYPE is export  = CURLINFO_STRING + 18;
-constant CURLOPT_SSL_VERIFYPEE is export  = 123;
-constant CURL_GLOBAL_DEFAULT is export    = 123;
-constant CURLOPT_SSL_VERIFYPEER is export = 123;
-constant CURLOPT_SSL_VERIFYHOST is export = 123;
+constant CURL_GLOBAL_DEFAULT is export    = 0x3;
+constant CURLOPT_SSL_VERIFYPEER is export = 0x40;
+constant CURLOPT_SSL_VERIFYHOST is export = 0x51;
 
 # Start a libcurl easy session 
 sub curl_easy_init() 
