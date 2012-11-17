@@ -13,7 +13,7 @@ if $curl {
     my $res = curl_easy_perform($curl);
 
     # Check for errors
-    if $res != CURLE_OK {
+    if $res {
       say "Error: curl_easy_perform() failed: {curl_easy_strerror($res)}";
  	}
 
