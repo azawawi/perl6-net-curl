@@ -29,9 +29,15 @@ sub curl_easy_perform(OpaquePointer)
 	is native(LIB) 
 	is export { ... };
 
+# Returns the string describing error code
 sub curl_easy_strerror(int)
 	returns Str
 	is native(LIB) 
 	is export { ... };
 
+# Returns the libcurl version string
+sub curl_easy_version()
+	returns Str
+	is native(LIB)
+	is export { ... };
 
