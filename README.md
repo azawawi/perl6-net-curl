@@ -27,3 +27,16 @@ Installation
 	make test
 	make install
 
+## Testing
+
+To run tests:
+
+    prove -e perl6
+
+## Author
+
+Ahmad M. Zawawi, azawawi on #perl6, https://github.com/azawawi/
+
+## License
+
+Artistic License 2.0
