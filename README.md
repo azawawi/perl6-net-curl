@@ -1,9 +1,10 @@
 Net::Curl
 =========
 
-This enables you to use libcurl native API in Perl 6.
+Net::Curl provides a Perl 6 interface to libcurl.
 The plan is support the libcurl Easy interface first
-and run all the libcurl website examples.
+and run all the libcurl website examples
+and then support an object-oriented interface.
 
 libcurl is a free and easy-to-use client-side URL transfer library.
 It supports DICT, FILE, FTP, FTPS, Gopher, HTTP, HTTPS, IMAP, IMAPS,
