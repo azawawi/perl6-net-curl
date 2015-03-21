@@ -1,10 +1,7 @@
 #!/usr/bin/env perl6
 use v6;
 
-BEGIN { @*INC.push('lib') };
-
 use Net::Curl;
-use NativeCall;
 
 my $curl = curl_easy_init;
 die "Failed to curl_easy_init" unless $curl;

@@ -1,9 +1,6 @@
 #!/usr/bin/env perl6
 use v6;
 
-BEGIN { @*INC.push('lib') };
-
-use NativeCall;
 use Net::Curl;
 
 constant SKIP_PEER_VERIFICATION 	 = 0;

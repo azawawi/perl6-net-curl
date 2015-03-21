@@ -1,8 +1,6 @@
 #!/usr/bin/env perl6
 use v6;
 
-BEGIN { @*INC.push('lib') };
-
 use Net::Curl;
 
 my $curl = curl_easy_init;
