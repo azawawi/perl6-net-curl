@@ -1,7 +1,5 @@
 #!/usr/bin/env perl6
 
-BEGIN { @*INC.push('lib') };
-
 use Net::Curl;
 
 class Net::Curl::Easy {
@@ -33,4 +31,6 @@ class Net::Curl::Easy {
 my $curl = Net::Curl::Easy.new(url => "http://www.google.com");
 my $response = $curl.download;
 say $response;
+
+# vim: ft=perl6
 

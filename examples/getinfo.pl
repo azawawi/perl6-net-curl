@@ -24,3 +24,6 @@ if CURLE_OK == $res {
     # always cleanup
     curl_easy_cleanup($curl);
 }
+
+# vim: ft=perl6
+

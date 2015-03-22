@@ -47,3 +47,5 @@ if $curl {
 
 curl_global_cleanup;
 
+# vim: ft=perl6
+
