@@ -225,6 +225,7 @@ sub curl_easy_cleanup(OpaquePointer)
 
 # Set options for a curl easy handle
 sub curl_easy_setopt(OpaquePointer, int, Str)
+    returns int
 	is native(LIB)
 	is export { ... };
 
