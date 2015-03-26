@@ -14,6 +14,7 @@ constant CURLE_OK    is export                  = 0;
 constant CURLINFO_CONTENT_TYPE is export        = CURLINFO_STRING + 18;
 constant CURL_GLOBAL_DEFAULT is export          = 0x3;
 constant CURLOPT_FILE is export                 = 10001;
+constant CURLOPT_WRITEDATA is export            = 10001;
 constant CURLOPT_PORT is export                 = 3;
 constant CURLOPT_PROXY is export                = 10004;
 constant CURLOPT_USERPWD is export              = 10005;
@@ -223,10 +224,40 @@ sub curl_easy_cleanup(OpaquePointer)
 	is native(LIB)
 	is export { ... };
 
-# Set options for a curl easy handle
-sub curl_easy_setopt(OpaquePointer, int, Str)
-	is native(LIB)
-	is export { ... };
+my sub _curl_easy_setopt(OpaquePointer, int, Str)
+    returns int
+    is native(LIB)
+    is symbol('curl_easy_setopt') { ... }
+
+# NOTE Waiting for multiple signatures
+my sub _curl_easy_setopt_cb(OpaquePointer, int, &cb (Str $ptr, int $size, int $nmemb, OpaquePointer $stream --> int))
+    returns int
+    is native(LIB)
+    is symbol('curl_easy_setopt') { ... }
+
+# Pass a string and returns it with data filled after curl_easy_perform()
+# curl_easy_setopt( $curl, CURLOPT_WRITEDATA, $body );
+multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, Str $value is rw) returns int is export {
+
+    $value = '';
+#TODO fix malformed utf-8 warning
+    sub callback( Str $ptr , int $size, int $nmemb, OpaquePointer $wtf --> int ) {
+#        my $tmp = nativecast( Str, $ptr ) ; # Pointer $ptr
+#        CATCH {
+#            say $_;
+#        }
+        $value = $ptr;
+        return $size * $nmemb;
+    }
+
+    return _curl_easy_setopt_cb($point, CURLOPT_WRITEFUNCTION, &callback);
+}
+
+multi sub curl_easy_setopt(OpaquePointer $point, Int $code, $value as Str) returns Int is export {
+
+    return _curl_easy_setopt($point, $code, $value);
+}
+
 
 # Perform a file transfer
 sub curl_easy_perform(OpaquePointer)
