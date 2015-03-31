@@ -230,23 +230,39 @@ my sub _curl_easy_setopt(OpaquePointer, int, Str)
     is symbol('curl_easy_setopt') { ... }
 
 # NOTE Waiting for multiple signatures
-my sub _curl_easy_setopt_cb(OpaquePointer, int, &cb (Str $ptr, int $size, int $nmemb, OpaquePointer $stream --> int))
+my sub _curl_easy_setopt_cb(OpaquePointer, int, &cb (Pointer $ptr, int $size, int $nmemb, OpaquePointer $stream --> int))
     returns int
     is native(LIB)
     is symbol('curl_easy_setopt') { ... }
 
-# Pass a string and returns it with data filled after curl_easy_perform()
-# curl_easy_setopt( $curl, CURLOPT_WRITEDATA, $body );
-multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, Str $value is rw) returns int is export {
+# Pass an empty buffer or string and returns it with data filled after curl_easy_perform()
+# On Str type it will decode the buffer to latin1
+# For Buf type you must decode it manualy. For example my $buf = Buf.new(); `perform` my Str $s = $buf.decode('utf-8')
+# curl_easy_setopt( $curl, CURLOPT_WRITEDATA, Str $body is rw );
+# curl_easy_setopt( $curl, CURLOPT_WRITEDATA, Buf $body is rw );
+# TODO add ref to function/IO ( $value )
+multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw) returns int is export {
 
-    $value = '';
-#TODO fix malformed utf-8 warning
-    sub callback( Str $ptr , int $size, int $nmemb, OpaquePointer $wtf --> int ) {
-#        my $tmp = nativecast( Str, $ptr ) ; # Pointer $ptr
-#        CATCH {
-#            say $_;
-#        }
-        $value = $ptr;
+    die "Invalid type to write data to. Use Str|Buf" if $value !~~ Str|Buf ;
+
+    $value = Buf.new if $value ~~ Buf ;
+    $value = ''      if $value ~~ Str ;
+
+    my Bool $is_str   = $value ~~ Str ;
+
+    sub callback( Pointer $ptr , int $size, int $nmemb, OpaquePointer $wtf --> int ) {
+
+        my $bytes = nativecast( CArray[int8], $ptr ) ;
+        my $buf   = Buf.new( $bytes[0..($size*$nmemb-1)] );
+
+        $buf    = $buf.decode('latin1') if $is_str ;# TODO in the future process encodings ? 
+        $value ~= $buf ;
+
+        CATCH {
+            warn "Failed to process chunk";
+            warn $_;
+        }
+
         return $size * $nmemb;
     }
 
