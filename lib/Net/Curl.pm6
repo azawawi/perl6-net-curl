@@ -240,23 +240,32 @@ my sub _curl_easy_setopt_cb(OpaquePointer, int, &cb (Pointer $ptr, int $size, in
 # For Buf type you must decode it manualy. For example my $buf = Buf.new(); `perform` my Str $s = $buf.decode('utf-8')
 # curl_easy_setopt( $curl, CURLOPT_WRITEDATA, Str $body is rw );
 # curl_easy_setopt( $curl, CURLOPT_WRITEDATA, Buf $body is rw );
-# TODO add ref to function/IO ( $value )
+# curl_easy_setopt( $curl, CURLOPT_WRITEDATA, IO::Handle $body is rw ); # you must close your FH
+# TODO add ref to function ( $value )
 multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw) returns int is export {
 
-    die "Invalid type to write data to. Use Str|Buf" if $value !~~ Str|Buf ;
-
-    $value = Buf.new if $value ~~ Buf ;
-    $value = ''      if $value ~~ Str ;
+    die "Invalid type to write data to. Use Str|Buf|IO::Handle" if $value !~~ Str|Buf|IO::Handle ;
 
     my Bool $is_str   = $value ~~ Str ;
+    my Bool $is_file  = $value ~~ IO::Handle;
+    my Bool $is_buf   = $value ~~ Buf ;
+
+    $value = Buf.new if $is_buf;
+    $value = ''      if $is_str;
 
     sub callback( Pointer $ptr , int $size, int $nmemb, OpaquePointer $wtf --> int ) {
 
         my $bytes = nativecast( CArray[int8], $ptr ) ;
         my $buf   = Buf.new( $bytes[0..($size*$nmemb-1)] );
 
-        $buf    = $buf.decode('latin1') if $is_str ;# TODO in the future process encodings ? 
-        $value ~= $buf ;
+        $buf    = $buf.decode('latin1') if $is_str ;# TODO in the future process encodings ?
+
+        if $is_buf {
+            $value ~= $buf ;
+        }
+        elsif $is_file {
+            $value.write( $buf );
+        }
 
         CATCH {
             warn "Failed to process chunk";
