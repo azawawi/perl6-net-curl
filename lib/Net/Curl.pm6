@@ -260,7 +260,7 @@ multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw
 
         $buf    = $buf.decode('latin1') if $is_str ;# TODO in the future process encodings ?
 
-        if $is_buf {
+        if $is_buf || $is_str {
             $value ~= $buf ;
         }
         elsif $is_file {
