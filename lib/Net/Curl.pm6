@@ -1,7 +1,7 @@
 
 use v6;
 
-module Net::Curl;
+unit module Net::Curl;
 
 use NativeCall;
 
@@ -260,7 +260,7 @@ multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw
 
         $buf    = $buf.decode('latin1') if $is_str ;# TODO in the future process encodings ?
 
-        if $is_buf {
+        if $is_buf || $is_str {
             $value ~= $buf ;
         }
         elsif $is_file {
@@ -278,7 +278,7 @@ multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw
     return _curl_easy_setopt_cb($point, CURLOPT_WRITEFUNCTION, &callback);
 }
 
-multi sub curl_easy_setopt(OpaquePointer $point, Int $code, $value as Str) returns Int is export {
+multi sub curl_easy_setopt(OpaquePointer $point, Int $code, $value as Str) returns int is export {
 
     return _curl_easy_setopt($point, $code, $value);
 }
