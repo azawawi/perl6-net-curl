@@ -278,7 +278,7 @@ multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw
     return _curl_easy_setopt_cb($point, CURLOPT_WRITEFUNCTION, &callback);
 }
 
-multi sub curl_easy_setopt(OpaquePointer $point, Int $code, $value as Str) returns Int is export {
+multi sub curl_easy_setopt(OpaquePointer $point, Int $code, $value as Str) returns int is export {
 
     return _curl_easy_setopt($point, $code, $value);
 }
