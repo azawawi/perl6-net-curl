@@ -1,7 +1,7 @@
 
 use v6;
 
-module Net::Curl;
+unit module Net::Curl;
 
 use NativeCall;
 
