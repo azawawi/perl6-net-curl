@@ -5,8 +5,7 @@ unit module Net::Curl;
 
 use NativeCall;
 
-constant LIB = 'libcurl.so';
-
+constant LIB = sprintf $*VM.config<dll>, "curl";
 
 constant CURLINFO_STRING                        = 0x100000;
 constant CURLOPT_URL is export                  = 10002;
