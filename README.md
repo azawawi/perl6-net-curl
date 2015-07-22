@@ -1,6 +1,8 @@
 Net::Curl
 =========
 
+[![Build Status](https://travis-ci.org/azawawi/perl6-net-curl.svg?branch=master)](https://travis-ci.org/azawawi/perl6-net-curl)
+
 Net::Curl provides a Perl 6 interface to libcurl.
 The plan is support the libcurl Easy interface first
 and run all the libcurl website examples
