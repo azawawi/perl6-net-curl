@@ -32,15 +32,6 @@ To install libcurl on Debian for example, please use the following command:
     panda install Net::Curl
 ```
 
-* Using ufo (a project Makefile creation script bundled with Rakudo Star) and make:
-
-```
-    ufo                    
-    make
-    make test
-    make install
-```
-
 ## Testing
 
 To run tests:
