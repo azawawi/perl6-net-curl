@@ -4,7 +4,8 @@
 	"description" : "Perl 6 interface to libcurl, the free and easy-to-use client-side URL transfer library",
 	"depends"     : [ ],
 	"provides"    : {
-		"Net::Curl"	: "lib/Net/Curl.pm6"
+		"Net::Curl"	: "lib/Net/Curl.pm6",
+		"Net::Curl::Easy"	: "lib/Net/Curl/Easy.pm6"
 	},
 	"source-url"  : "git://github.com/azawawi/perl6-net-curl.git"
 }
