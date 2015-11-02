@@ -1,7 +1,4 @@
-Net::Curl
-=========
-
-[![Build Status](https://travis-ci.org/azawawi/perl6-net-curl.svg?branch=master)](https://travis-ci.org/azawawi/perl6-net-curl)
+# Net::Curl [![Build Status](https://travis-ci.org/azawawi/perl6-net-curl.svg?branch=master)](https://travis-ci.org/azawawi/perl6-net-curl)
 
 Net::Curl provides a Perl 6 interface to libcurl.
 The plan is support the libcurl Easy interface first
@@ -16,8 +13,7 @@ FTP uploading, HTTP form based upload, proxies, cookies,
 user+password authentication (Basic, Digest, NTLM, Negotiate, Kerberos), 
 file transfer resume, http proxy tunneling and more!
 
-Installation
-============
+## Installation
 
 * Since Net::Curl uses libcurl, libcurl.so must be found in /usr/lib.
 To install libcurl on Debian for example, please use the following command:
@@ -29,7 +25,7 @@ To install libcurl on Debian for example, please use the following command:
 * Using panda (a module management tool bundled with Rakudo Star):
 
 ```
-    panda install Net::Curl
+$ panda install Net::Curl
 ```
 
 ## Testing
@@ -37,7 +33,7 @@ To install libcurl on Debian for example, please use the following command:
 To run tests:
 
 ```
-    prove -e perl6
+$ prove -e "perl6 -Ilib"
 ```
 
 ## Author
