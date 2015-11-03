@@ -31,5 +31,3 @@ method download {
 
 	return $body.decode('latin1');
 }
-
-# vim: ft=perl6
