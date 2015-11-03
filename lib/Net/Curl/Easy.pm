@@ -9,7 +9,7 @@ has $.url;
 method download {
 
 	my $curl = curl_easy_init;
-	my $body = Buf.new; # or use Str
+	my $body = Buf.new;
 
 	if $curl {
 		curl_easy_setopt($curl, CURLOPT_URL, $.url);
@@ -33,4 +33,3 @@ method download {
 }
 
 # vim: ft=perl6
-
