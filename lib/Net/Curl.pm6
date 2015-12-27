@@ -5,7 +5,7 @@ unit module Net::Curl;
 
 use NativeCall;
 
-constant LIB = "libcurl"; 
+constant LIB = "curl"; 
 
 constant CURLINFO_STRING                        = 0x100000;
 constant CURLOPT_URL is export                  = 10002;
@@ -277,7 +277,7 @@ multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw
     return _curl_easy_setopt_cb($point, CURLOPT_WRITEFUNCTION, &callback);
 }
 
-multi sub curl_easy_setopt(OpaquePointer $point, Int $code, $value as Str) returns int is export {
+multi sub curl_easy_setopt(OpaquePointer $point, Int $code, Str $value) returns int is export {
 
     return _curl_easy_setopt($point, $code, $value);
 }
