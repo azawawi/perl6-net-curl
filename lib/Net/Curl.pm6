@@ -5,7 +5,7 @@ unit module Net::Curl;
 
 use NativeCall;
 
-constant LIB = "libcurl"; 
+constant LIB = "curl"; 
 
 constant CURLINFO_STRING                        = 0x100000;
 constant CURLOPT_URL is export                  = 10002;
@@ -223,14 +223,14 @@ sub curl_easy_cleanup(OpaquePointer)
 	is native(LIB)
 	is export { ... };
 
-my sub _curl_easy_setopt(OpaquePointer, int, Str)
-    returns int
+my sub _curl_easy_setopt(OpaquePointer, uint32, Str)
+    returns uint32
     is native(LIB)
     is symbol('curl_easy_setopt') { ... }
 
 # NOTE Waiting for multiple signatures
-my sub _curl_easy_setopt_cb(OpaquePointer, int, &cb (Pointer $ptr, int $size, int $nmemb, OpaquePointer $stream --> int))
-    returns int
+my sub _curl_easy_setopt_cb(OpaquePointer, uint32, &cb (Pointer $ptr, uint32 $size, uint32 $nmemb, OpaquePointer $stream --> uint32))
+    returns uint32
     is native(LIB)
     is symbol('curl_easy_setopt') { ... }
 
@@ -241,7 +241,7 @@ my sub _curl_easy_setopt_cb(OpaquePointer, int, &cb (Pointer $ptr, int $size, in
 # curl_easy_setopt( $curl, CURLOPT_WRITEDATA, Buf $body is rw );
 # curl_easy_setopt( $curl, CURLOPT_WRITEDATA, IO::Handle $body is rw ); # you must close your FH
 # TODO add ref to function ( $value )
-multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw) returns int is export {
+multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw) returns int32 is export {
 
     die "Invalid type to write data to. Use Str|Buf|IO::Handle" if $value !~~ Str|Buf|IO::Handle ;
 
@@ -252,7 +252,8 @@ multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw
     $value = Buf.new if $is_buf;
     $value = ''      if $is_str;
 
-    sub callback( Pointer $ptr , int $size, int $nmemb, OpaquePointer $wtf --> int ) {
+    # size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
+    sub callback( Pointer $ptr , uint32 $size, uint32 $nmemb, OpaquePointer $wtf --> uint32 ) {
 
         my $bytes = nativecast( CArray[int8], $ptr ) ;
         my $buf   = Buf.new( $bytes[0..($size*$nmemb-1)] );
@@ -277,7 +278,9 @@ multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw
     return _curl_easy_setopt_cb($point, CURLOPT_WRITEFUNCTION, &callback);
 }
 
-multi sub curl_easy_setopt(OpaquePointer $point, Int $code, $value as Str) returns int is export {
+# CURLcode curl_easy_setopt(CURL *handle, CURLoption option, parameter); 
+# CURLcode - status codes
+multi sub curl_easy_setopt(OpaquePointer $point, uint16 $code, Str $value) returns uint8 is export {
 
     return _curl_easy_setopt($point, $code, $value);
 }
@@ -285,12 +288,13 @@ multi sub curl_easy_setopt(OpaquePointer $point, Int $code, $value as Str) retur
 
 # Perform a file transfer
 sub curl_easy_perform(OpaquePointer)
-	returns int
+	returns uint32
 	is native(LIB) 
 	is export { ... };
 
 # Return the string describing error code
-sub curl_easy_strerror(int)
+# const char *curl_easy_strerror(CURLcode errornum); 
+sub curl_easy_strerror(uint8)
 	returns Str
 	is native(LIB) 
 	is export { ... };
@@ -302,13 +306,15 @@ sub curl_easy_version()
 	is export { ... };
 
 # Extract information from a curl handle
-sub curl_easy_getinfo(OpaquePointer, int, CArray[Str])
-	returns int
+# CURLcode curl_easy_getinfo(CURL *curl, CURLINFO info, ... ); 
+sub curl_easy_getinfo(OpaquePointer, uint8, CArray[Str])
+	returns uint8
 	is native(LIB)
 	is export { ... };
 
-sub curl_global_init(int)
-	returns int
+# CURLcode curl_global_init(long flags ); 
+sub curl_global_init(int32)
+	returns uint8
 	is native(LIB)
 	is export { ... };
 

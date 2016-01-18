@@ -18,6 +18,3 @@ if $curl {
     # always cleanup 
     curl_easy_cleanup($curl);
 }
-
-# vim: ft=perl6
-
