@@ -1,4 +1,4 @@
-# Net::Curl [![Build Status](https://travis-ci.org/azawawi/perl6-net-curl.svg?branch=master)](https://travis-ci.org/azawawi/perl6-net-curl)
+# Net::Curl
 
 Net::Curl provides a Perl 6 interface to libcurl.
 The plan is support the libcurl Easy interface first
@@ -24,14 +24,19 @@ file transfer resume, http proxy tunneling and more!
 
 * Since Net::Curl uses libcurl, libcurl.so must be found in /usr/lib.
 To install libcurl on Debian for example, please use the following command:
-
 ```
-	sudo apt-get install libcurl3-dev
+$ sudo apt-get install libcurl3-dev
+```
+
+* On Mac OS X, Please use the following command:
+```
+$ brew update
+$ brew install curl
 ```
 
 * Using panda (a module management tool bundled with Rakudo Star):
-
 ```
+$ panda update
 $ panda install Net::Curl
 ```
 
