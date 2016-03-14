@@ -1,6 +1,7 @@
 #!/usr/bin/env perl6
 use v6;
 
+use lib 'lib';
 use Net::Curl;
 
 constant SKIP_PEER_VERIFICATION 	 = 0;
@@ -11,7 +12,7 @@ curl_global_init(CURL_GLOBAL_DEFAULT);
 my $curl = curl_easy_init;
 
 if $curl {
-    curl_easy_setopt($curl, CURLOPT_URL, "https://www.google.jo/");
+    _curl_easy_setopt($curl, CURLOPT_URL, "https://www.google.jo/");
 
 	if SKIP_PEER_VERIFICATION {
 # If you want to connect to a site who isn't using a certificate that is

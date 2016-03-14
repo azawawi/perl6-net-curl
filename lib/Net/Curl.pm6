@@ -223,10 +223,11 @@ sub curl_easy_cleanup(OpaquePointer)
 	is native(LIB)
 	is export { ... };
 
-my sub _curl_easy_setopt(OpaquePointer, uint32, Str)
+sub _curl_easy_setopt(OpaquePointer, uint32, Str)
     returns uint32
     is native(LIB)
-    is symbol('curl_easy_setopt') { ... }
+    is symbol('curl_easy_setopt')
+    is export { ... }
 
 # NOTE Waiting for multiple signatures
 my sub _curl_easy_setopt_cb(OpaquePointer, uint32, &cb (Pointer $ptr, uint32 $size, uint32 $nmemb, OpaquePointer $stream --> uint32))

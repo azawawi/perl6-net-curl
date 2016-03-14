@@ -1,12 +1,14 @@
 #!/usr/bin/env perl6
 use v6;
 
+use lib 'lib';
+use NativeCall;
 use Net::Curl;
 
 my $curl = curl_easy_init;
 die "Failed to curl_easy_init" unless $curl;
 
-curl_easy_setopt($curl, CURLOPT_URL, 'http://www.google.jo/');
+_curl_easy_setopt($curl, CURLOPT_URL, 'http://www.google.jo/');
     
 my $res = curl_easy_perform($curl);
 
