@@ -229,6 +229,12 @@ sub _curl_easy_setopt(OpaquePointer, uint32, Str)
     is symbol('curl_easy_setopt')
     is export { ... }
 
+sub _curl_easy_setopt_int32(OpaquePointer, uint32, int32)
+    returns uint32
+    is native(LIB)
+    is symbol('curl_easy_setopt')
+    { ... }
+
 # NOTE Waiting for multiple signatures
 my sub _curl_easy_setopt_cb(OpaquePointer, uint32, &cb (Pointer $ptr, uint32 $size, uint32 $nmemb, OpaquePointer $stream --> uint32))
     returns uint32
@@ -284,6 +290,10 @@ multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw
 multi sub curl_easy_setopt(OpaquePointer $point, Int:D $code, Str $value) returns int32 is export {
 
     return _curl_easy_setopt($point, $code, $value);
+}
+
+multi sub curl_easy_setopt(OpaquePointer $point, Int:D $code, Int:D $value) returns int32 is export {
+    return _curl_easy_setopt_int32($point, $code, $value);
 }
 
 
