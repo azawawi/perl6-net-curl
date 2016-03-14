@@ -1,6 +1,8 @@
 #!/usr/bin/env perl6
 use v6;
 
+# Not yet implemented
+
 use lib 'lib';
 use Net::Curl::API;
 
