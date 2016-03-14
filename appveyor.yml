@@ -16,6 +16,7 @@ install:
 build: off
 
 test_script:
+  - set NETWORK_TESTING=1
   - prove -v -e "perl6 -Ilib" t/
   - perl6 -Ilib bin/zef --verbose install .
   - SET PATH=%APPVEYOR_BUILD_FOLDER%\..\rakudo\install\share\perl6\site\bin;%PATH%

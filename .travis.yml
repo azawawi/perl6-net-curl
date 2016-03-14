@@ -21,4 +21,4 @@ install:
   - rakudobrew build panda
   - panda installdeps .
 
-script: prove -v -e "perl6 -Ilib" t/
+script: NETWORK_TESTING=1 prove -v -e "perl6 -Ilib" t/
