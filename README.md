@@ -13,6 +13,13 @@ FTP uploading, HTTP form based upload, proxies, cookies,
 user+password authentication (Basic, Digest, NTLM, Negotiate, Kerberos), 
 file transfer resume, http proxy tunneling and more!
 
+## Build Status
+
+| Operating System  |   Build Status  | CI Provider |
+| ----------------- | --------------- | ----------- |
+| Linux / Mac OS X  | [![Build Status](https://travis-ci.org/azawawi/perl6-net-curl.svg?branch=master)](https://travis-ci.org/azawawi/perl6-net-curl)  | Travis CI |
+| Windows 7 64-bit  | [![Build status](https://ci.appveyor.com/api/projects/status/github/azawawi/perl6-net-curl?svg=true)](https://ci.appveyor.com/project/azawawi/perl6-net-curl/branch/master)  | AppVeyor |
+
 ## Installation
 
 * Since Net::Curl uses libcurl, libcurl.so must be found in /usr/lib.
