@@ -1,4 +1,16 @@
+use v6;
+
+unit module Net::Curl::NativeCall;
+
+use NativeCall;
+
 ## Generated using gptrixie --all /usr/include/curl/curl.h -I /usr/include/curl/ > Generated.pm6
+## And then modified by hand
+
+constant CURLPtr is export = Pointer;
+constant CURLMPtr is export = Pointer;
+constant CURLSHPtr is export = Pointer;
+constant curl_socket_t is export = uint32;
 
 ## Enumerations
 
@@ -438,14 +450,14 @@ enum CURLoption is export (
    CURLOPT_LOGIN_OPTIONS => 10224,
    CURLOPT_LASTENTRY => 10225
 );
-enum ._35 is export (
+enum _35 is export (
    CURL_HTTP_VERSION_NONE => 0,
    CURL_HTTP_VERSION_1_0 => 1,
    CURL_HTTP_VERSION_1_1 => 2,
    CURL_HTTP_VERSION_2_0 => 3,
    CURL_HTTP_VERSION_LAST => 4
 );
-enum ._36 is export (
+enum _36 is export (
    CURL_RTSPREQ_NONE => 0,
    CURL_RTSPREQ_OPTIONS => 1,
    CURL_RTSPREQ_DESCRIBE => 2,
@@ -466,7 +478,7 @@ enum CURL_NETRC_OPTION is export (
    CURL_NETRC_REQUIRED => 2,
    CURL_NETRC_LAST => 3
 );
-enum ._37 is export (
+enum _37 is export (
    CURL_SSLVERSION_DEFAULT => 0,
    CURL_SSLVERSION_TLSv1 => 1,
    CURL_SSLVERSION_SSLv2 => 2,
@@ -633,13 +645,6 @@ enum CURLversion is export (
 ## Structures
 
 
-# == /usr/include/wchar.h ==
-
-class __mbstate_t is repr('CStruct') is export {
-	has int32                         $.__count; # int __count
-	HAS __mbstate_t___value_Union     $.__value; # Union __value
-}
-
 # == /usr/include/curl/multi.h ==
 
 class CURLMsg_data_Union is repr('CUnion') is export {
@@ -657,21 +662,10 @@ class curl_waitfd is repr('CStruct') is export {
 	has int16                         $.revents; # short int revents
 }
 
-# == /usr/include/_G_config.h ==
-
-class _G_fpos_t is repr('CStruct') is export {
-	has __off_t                       $.__pos; # Typedef<__off_t>->|long int| __pos
-	HAS __mbstate_t                   $.__state; # __mbstate_t __state
-}
-class _G_fpos64_t is repr('CStruct') is export {
-	has __off64_t                     $.__pos; # Typedef<__off64_t>->|long int| __pos
-	HAS __mbstate_t                   $.__state; # __mbstate_t __state
-}
-
 # == /usr/include/curl/curl.h ==
 
 class curl_httppost is repr('CStruct') is export {
-	has Pointer[curl_httppost]        $.next; # curl_httppost* next
+	has Pointer                       $.next; # curl_httppost* next
 	has Str                           $.name; # char* name
 	has long                          $.namelength; # long int namelength
 	has Str                           $.contents; # char* contents
@@ -679,40 +673,41 @@ class curl_httppost is repr('CStruct') is export {
 	has Str                           $.buffer; # char* buffer
 	has long                          $.bufferlength; # long int bufferlength
 	has Str                           $.contenttype; # char* contenttype
-	has Pointer[curl_slist]           $.contentheader; # curl_slist* contentheader
-	has Pointer[curl_httppost]        $.more; # curl_httppost* more
+	has Pointer                       $.contentheader; # curl_slist* contentheader
+	has Pointer                       $.more; # curl_httppost* more
 	has long                          $.flags; # long int flags
 	has Str                           $.showfilename; # char* showfilename
 	has Pointer                       $.userp; # void* userp
 }
-class curl_fileinfo is repr('CStruct') is export {
-	has Str                           $.filename; # char* filename
-	has int32                         $.filetype; # curlfiletype filetype
-	has __time_t                      $.time; # Typedef<time_t>->|Typedef<__time_t>->|long int|| time
-	has uint32                        $.perm; # unsigned int perm
-	has int32                         $.uid; # int uid
-	has int32                         $.gid; # int gid
-	has curl_off_t                    $.size; # Typedef<curl_off_t>->|long int| size
-	has long                          $.hardlinks; # long int hardlinks
-	HAS N13curl_fileinfo4._22E        $.strings; # N13curl_fileinfo4._22E strings
-	has uint32                        $.flags; # unsigned int flags
-	has Str                           $.b_data; # char* b_data
-	has size_t                        $.b_size; # Typedef<size_t>->|long unsigned int| b_size
-	has size_t                        $.b_used; # Typedef<size_t>->|long unsigned int| b_used
-}
-class N13curl_fileinfo4._22E is repr('CStruct') is export {
+class curl_fileinfo_strings is repr('CStruct') is export {
 	has Str                           $.time; # char* time
 	has Str                           $.perm; # char* perm
 	has Str                           $.user; # char* user
 	has Str                           $.group; # char* group
 	has Str                           $.target; # char* target
 }
+class curl_fileinfo is repr('CStruct') is export {
+	has Str                           $.filename; # char* filename
+	has int32                         $.filetype; # curlfiletype filetype
+	has int32                      $.time; # Typedef<time_t>->|Typedef<int32>->|long int|| time
+	has uint32                        $.perm; # unsigned int perm
+	has int32                         $.uid; # int uid
+	has int32                         $.gid; # int gid
+	has int32                    $.size; # Typedef<curl_off_t>->|long int| size
+	has long                          $.hardlinks; # long int hardlinks
+	has curl_fileinfo_strings        $.strings; # N13curl_fileinfo4._22E strings
+	has uint32                        $.flags; # unsigned int flags
+	has Str                           $.b_data; # char* b_data
+	has size_t                        $.b_size; # Typedef<size_t>->|long unsigned int| b_size
+	has size_t                        $.b_used; # Typedef<size_t>->|long unsigned int| b_used
+}
 class curl_sockaddr is repr('CStruct') is export {
 	has int32                         $.family; # int family
 	has int32                         $.socktype; # int socktype
 	has int32                         $.protocol; # int protocol
 	has uint32                        $.addrlen; # unsigned int addrlen
-	HAS sockaddr                      $.addr; # sockaddr addr
+#TODO add this
+##	has sockaddr                      $.addr; # sockaddr addr
 }
 class curl_khkey is repr('CStruct') is export {
 	has Str                           $.key; # const char* key
@@ -752,63 +747,8 @@ class curl_version_info_data is repr('CStruct') is export {
 	has Str                           $.libssh_version; # const char* libssh_version
 }
 
-# == <built-in> ==
-
-class __va_list_tag is repr('CStruct') is export {
-}
-
-# == /usr/include/xlocale.h ==
-
-class __locale_struct is repr('CStruct') is export {
-	has CArray[Pointer[__locale_data]]$.__locales; # __locale_data*[13] __locales
-	has Pointer[uint16]               $.__ctype_b; # const short unsigned int* __ctype_b
-	has Pointer[int32]                $.__ctype_tolower; # const int* __ctype_tolower
-	has Pointer[int32]                $.__ctype_toupper; # const int* __ctype_toupper
-	has CArray[Str]                   $.__names; # const char*[13] __names
-}
-class __locale_data is repr('CStruct') is export {
-}
-
-# == /usr/include/time.h ==
-
-class timespec is repr('CStruct') is export {
-	has __time_t                      $.tv_sec; # Typedef<__time_t>->|long int| tv_sec
-	has __syscall_slong_t             $.tv_nsec; # Typedef<__syscall_slong_t>->|long int| tv_nsec
-}
-class tm is repr('CStruct') is export {
-	has int32                         $.tm_sec; # int tm_sec
-	has int32                         $.tm_min; # int tm_min
-	has int32                         $.tm_hour; # int tm_hour
-	has int32                         $.tm_mday; # int tm_mday
-	has int32                         $.tm_mon; # int tm_mon
-	has int32                         $.tm_year; # int tm_year
-	has int32                         $.tm_wday; # int tm_wday
-	has int32                         $.tm_yday; # int tm_yday
-	has int32                         $.tm_isdst; # int tm_isdst
-	has long                          $.tm_gmtoff; # long int tm_gmtoff
-	has Str                           $.tm_zone; # const char* tm_zone
-}
-class itimerspec is repr('CStruct') is export {
-	HAS timespec                      $.it_interval; # timespec it_interval
-	HAS timespec                      $.it_value; # timespec it_value
-}
-class sigevent is repr('CStruct') is export {
-}
 ## Extras stuff
 
-constant fpos64_t is export := _G_fpos64_t;
-constant CURLPtr is export = Pointer;
-constant fpos_t is export := _G_fpos_t;
-constant CURLMPtr is export = Pointer;
-constant cookie_io_functions_t is export := _IO_cookie_io_functions_t;
-constant FILE is export := _IO_FILE;
-constant CURLSHPtr is export = Pointer;
-constant __FILE is export := _IO_FILE;
-constant _IO_lock_tPtr is export = Pointer;
-constant CURLMsg is export := CURLMsg;
-constant __pthread_list_t is export := __pthread_internal_list;
-constant fsid_t is export := __fsid_t;
-constant sigset_t is export := __sigset_t;
 ## Functions
 
 
@@ -1311,8 +1251,8 @@ sub curl_slist_free_all(Pointer[curl_slist]  # curl_slist*
 # */
 #CURL_EXTERN time_t curl_getdate(const char *p, const time_t *unused);
 sub curl_getdate(Str                           $p # const char*
-                ,Pointer[__time_t]             $unused # const Typedef<time_t>->|Typedef<__time_t>->|long int||*
-                 ) is native(LIB) returns __time_t is export { * }
+                ,Pointer[int32]             $unused # const Typedef<time_t>->|Typedef<int32>->|long int||*
+                 ) is native(LIB) returns int32 is export { * }
 
 #-From /usr/include/curl/curl.h:2149
 #CURL_EXTERN CURLSH *curl_share_init(void);
@@ -1385,304 +1325,6 @@ sub curl_share_strerror(int32  # CURLSHcode
 sub curl_easy_pause(CURLPtr                       $handle # Typedef<CURL>->|void|*
                    ,int32                         $bitmask # int
                     ) is native(LIB) returns int32 is export { * }
-
-
-# == /usr/include/time.h ==
-
-#-From /usr/include/time.h:189
-#__BEGIN_NAMESPACE_STD
-#/* Time used by the program so far (user time + system time).
-#   The result / CLOCKS_PER_SECOND is program time in seconds.  */
-#extern clock_t clock (void) __THROW;
-sub clock(
-          ) is native(LIB) returns __clock_t is export { * }
-
-#-From /usr/include/time.h:192
-#/* Return the current time and put it in *TIMER if TIMER is not NULL.  */
-#extern time_t time (time_t *__timer) __THROW;
-sub time(Pointer[__time_t] $__timer # Typedef<time_t>->|Typedef<__time_t>->|long int||*
-         ) is native(LIB) returns __time_t is export { * }
-
-#-From /usr/include/time.h:196
-#/* Return the difference between TIME1 and TIME0.  */
-#extern double difftime (time_t __time1, time_t __time0)
-#     __THROW __attribute__ ((__const__));
-sub difftime(__time_t                      $__time1 # Typedef<time_t>->|Typedef<__time_t>->|long int||
-            ,__time_t                      $__time0 # Typedef<time_t>->|Typedef<__time_t>->|long int||
-             ) is native(LIB) returns num64 is export { * }
-
-#-From /usr/include/time.h:199
-#/* Return the `time_t' representation of TP and normalize TP.  */
-#extern time_t mktime (struct tm *__tp) __THROW;
-sub mktime(Pointer[tm] $__tp # tm*
-           ) is native(LIB) returns __time_t is export { * }
-
-#-From /usr/include/time.h:207
-#/* Format TP into S according to FORMAT.
-#   Write no more than MAXSIZE characters and return the number
-#   of characters written, or 0 if it would exceed MAXSIZE.  */
-#extern size_t strftime (char *__restrict __s, size_t __maxsize,
-#			const char *__restrict __format,
-#			const struct tm *__restrict __tp) __THROW;
-sub strftime(Str                           $__s # const char*
-            ,size_t                        $__maxsize # Typedef<size_t>->|long unsigned int|
-            ,Str                           $__format # const const char*
-            ,Pointer[tm]                   $__tp # const const tm*
-             ) is native(LIB) returns size_t is export { * }
-
-#-From /usr/include/time.h:215
-## ifdef __USE_XOPEN
-#/* Parse S according to FORMAT and store binary time information in TP.
-#   The return value is a pointer to the first unparsed character in S.  */
-#extern char *strptime (const char *__restrict __s,
-#		       const char *__restrict __fmt, struct tm *__tp)
-#     __THROW;
-sub strptime(Str                           $__s # const const char*
-            ,Str                           $__fmt # const const char*
-            ,Pointer[tm]                   $__tp # tm*
-             ) is native(LIB) returns Str is export { * }
-
-#-From /usr/include/time.h:226
-#extern size_t strftime_l (char *__restrict __s, size_t __maxsize,
-#			  const char *__restrict __format,
-#			  const struct tm *__restrict __tp,
-#			  __locale_t __loc) __THROW;
-sub strftime_l(Str                           $__s # const char*
-              ,size_t                        $__maxsize # Typedef<size_t>->|long unsigned int|
-              ,Str                           $__format # const const char*
-              ,Pointer[tm]                   $__tp # const const tm*
-              ,Pointer[__locale_struct]      $__loc # Typedef<__locale_t>->|__locale_struct*|
-               ) is native(LIB) returns size_t is export { * }
-
-#-From /usr/include/time.h:232
-## ifdef __USE_GNU
-#extern char *strptime_l (const char *__restrict __s,
-#			 const char *__restrict __fmt, struct tm *__tp,
-#			 __locale_t __loc) __THROW;
-sub strptime_l(Str                           $__s # const const char*
-              ,Str                           $__fmt # const const char*
-              ,Pointer[tm]                   $__tp # tm*
-              ,Pointer[__locale_struct]      $__loc # Typedef<__locale_t>->|__locale_struct*|
-               ) is native(LIB) returns Str is export { * }
-
-#-From /usr/include/time.h:239
-#__BEGIN_NAMESPACE_STD
-#/* Return the `struct tm' representation of *TIMER
-#   in Universal Coordinated Time (aka Greenwich Mean Time).  */
-#extern struct tm *gmtime (const time_t *__timer) __THROW;
-sub gmtime(Pointer[__time_t] $__timer # const Typedef<time_t>->|Typedef<__time_t>->|long int||*
-           ) is native(LIB) returns Pointer[tm] is export { * }
-
-#-From /usr/include/time.h:243
-#/* Return the `struct tm' representation
-#   of *TIMER in the local timezone.  */
-#extern struct tm *localtime (const time_t *__timer) __THROW;
-sub localtime(Pointer[__time_t] $__timer # const Typedef<time_t>->|Typedef<__time_t>->|long int||*
-              ) is native(LIB) returns Pointer[tm] is export { * }
-
-#-From /usr/include/time.h:250
-## if defined __USE_POSIX || defined __USE_MISC
-#/* Return the `struct tm' representation of *TIMER in UTC,
-#   using *TP to store the result.  */
-#extern struct tm *gmtime_r (const time_t *__restrict __timer,
-#			    struct tm *__restrict __tp) __THROW;
-sub gmtime_r(Pointer[__time_t]             $__timer # const const Typedef<time_t>->|Typedef<__time_t>->|long int||*
-            ,Pointer[tm]                   $__tp # const tm*
-             ) is native(LIB) returns Pointer[tm] is export { * }
-
-#-From /usr/include/time.h:255
-#/* Return the `struct tm' representation of *TIMER in local time,
-#   using *TP to store the result.  */
-#extern struct tm *localtime_r (const time_t *__restrict __timer,
-#			       struct tm *__restrict __tp) __THROW;
-sub localtime_r(Pointer[__time_t]             $__timer # const const Typedef<time_t>->|Typedef<__time_t>->|long int||*
-               ,Pointer[tm]                   $__tp # const tm*
-                ) is native(LIB) returns Pointer[tm] is export { * }
-
-#-From /usr/include/time.h:261
-#__BEGIN_NAMESPACE_STD
-#/* Return a string of the form "Day Mon dd hh:mm:ss yyyy\n"
-#   that is the representation of TP in this format.  */
-#extern char *asctime (const struct tm *__tp) __THROW;
-sub asctime(Pointer[tm] $__tp # const tm*
-            ) is native(LIB) returns Str is export { * }
-
-#-From /usr/include/time.h:264
-#/* Equivalent to `asctime (localtime (timer))'.  */
-#extern char *ctime (const time_t *__timer) __THROW;
-sub ctime(Pointer[__time_t] $__timer # const Typedef<time_t>->|Typedef<__time_t>->|long int||*
-          ) is native(LIB) returns Str is export { * }
-
-#-From /usr/include/time.h:273
-#/* Return in BUF a string of the form "Day Mon dd hh:mm:ss yyyy\n"
-#   that is the representation of TP in this format.  */
-#extern char *asctime_r (const struct tm *__restrict __tp,
-#			char *__restrict __buf) __THROW;
-sub asctime_r(Pointer[tm]                   $__tp # const const tm*
-             ,Str                           $__buf # const char*
-              ) is native(LIB) returns Str is export { * }
-
-#-From /usr/include/time.h:277
-#/* Equivalent to `asctime_r (localtime_r (timer, *TMP*), buf)'.  */
-#extern char *ctime_r (const time_t *__restrict __timer,
-#		      char *__restrict __buf) __THROW;
-sub ctime_r(Pointer[__time_t]             $__timer # const const Typedef<time_t>->|Typedef<__time_t>->|long int||*
-           ,Str                           $__buf # const char*
-            ) is native(LIB) returns Str is export { * }
-
-#-From /usr/include/time.h:293
-#/* Set time conversion information from the TZ environment variable.
-#   If TZ is not defined, a locale-dependent default is used.  */
-#extern void tzset (void) __THROW;
-sub tzset(
-          ) is native(LIB)  is export { * }
-
-#-From /usr/include/time.h:304
-## ifdef __USE_SVID
-#/* Set the system time to *WHEN.
-#   This call is restricted to the superuser.  */
-#extern int stime (const time_t *__when) __THROW;
-sub stime(Pointer[__time_t] $__when # const Typedef<time_t>->|Typedef<__time_t>->|long int||*
-          ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:319
-#/* Like `mktime', but for TP represents Universal Time, not local time.  */
-#extern time_t timegm (struct tm *__tp) __THROW;
-sub timegm(Pointer[tm] $__tp # tm*
-           ) is native(LIB) returns __time_t is export { * }
-
-#-From /usr/include/time.h:322
-#/* Another name for `mktime'.  */
-#extern time_t timelocal (struct tm *__tp) __THROW;
-sub timelocal(Pointer[tm] $__tp # tm*
-              ) is native(LIB) returns __time_t is export { * }
-
-#-From /usr/include/time.h:325
-#/* Return the number of days in YEAR.  */
-#extern int dysize (int __year) __THROW  __attribute__ ((__const__));
-sub dysize(int32 $__year # int
-           ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:335
-#   This function is a cancellation point and therefore not marked with
-#   __THROW.  */
-#extern int nanosleep (const struct timespec *__requested_time,
-#		      struct timespec *__remaining);
-sub nanosleep(Pointer[timespec]             $__requested_time # const timespec*
-             ,Pointer[timespec]             $__remaining # timespec*
-              ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:339
-#/* Get resolution of clock CLOCK_ID.  */
-#extern int clock_getres (clockid_t __clock_id, struct timespec *__res) __THROW;
-sub clock_getres(__clockid_t                   $__clock_id # Typedef<clockid_t>->|Typedef<__clockid_t>->|int||
-                ,Pointer[timespec]             $__res # timespec*
-                 ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:342
-#/* Get current value of clock CLOCK_ID and store it in TP.  */
-#extern int clock_gettime (clockid_t __clock_id, struct timespec *__tp) __THROW;
-sub clock_gettime(__clockid_t                   $__clock_id # Typedef<clockid_t>->|Typedef<__clockid_t>->|int||
-                 ,Pointer[timespec]             $__tp # timespec*
-                  ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:346
-#/* Set clock CLOCK_ID to value TP.  */
-#extern int clock_settime (clockid_t __clock_id, const struct timespec *__tp)
-#     __THROW;
-sub clock_settime(__clockid_t                   $__clock_id # Typedef<clockid_t>->|Typedef<__clockid_t>->|int||
-                 ,Pointer[timespec]             $__tp # const timespec*
-                  ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:355
-#   This function is a cancellation point and therefore not marked with
-#   __THROW.  */
-#extern int clock_nanosleep (clockid_t __clock_id, int __flags,
-#			    const struct timespec *__req,
-#			    struct timespec *__rem);
-sub clock_nanosleep(__clockid_t                   $__clock_id # Typedef<clockid_t>->|Typedef<__clockid_t>->|int||
-                   ,int32                         $__flags # int
-                   ,Pointer[timespec]             $__req # const timespec*
-                   ,Pointer[timespec]             $__rem # timespec*
-                    ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:358
-#/* Return clock ID for CPU-time clock.  */
-#extern int clock_getcpuclockid (pid_t __pid, clockid_t *__clock_id) __THROW;
-sub clock_getcpuclockid(__pid_t                       $__pid # Typedef<pid_t>->|Typedef<__pid_t>->|int||
-                       ,Pointer[__clockid_t]          $__clock_id # Typedef<clockid_t>->|Typedef<__clockid_t>->|int||*
-                        ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:365
-#/* Create new per-process timer using CLOCK_ID.  */
-#extern int timer_create (clockid_t __clock_id,
-#			 struct sigevent *__restrict __evp,
-#			 timer_t *__restrict __timerid) __THROW;
-sub timer_create(__clockid_t                   $__clock_id # Typedef<clockid_t>->|Typedef<__clockid_t>->|int||
-                ,Pointer[sigevent]             $__evp # const sigevent*
-                ,Pointer[Pointer]              $__timerid # const Typedef<timer_t>->|Typedef<__timer_t>->|void*||*
-                 ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:368
-#/* Delete timer TIMERID.  */
-#extern int timer_delete (timer_t __timerid) __THROW;
-sub timer_delete(Pointer $__timerid # Typedef<timer_t>->|Typedef<__timer_t>->|void*||
-                 ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:373
-#/* Set timer TIMERID to VALUE, returning old value in OVALUE.  */
-#extern int timer_settime (timer_t __timerid, int __flags,
-#			  const struct itimerspec *__restrict __value,
-#			  struct itimerspec *__restrict __ovalue) __THROW;
-sub timer_settime(Pointer                       $__timerid # Typedef<timer_t>->|Typedef<__timer_t>->|void*||
-                 ,int32                         $__flags # int
-                 ,Pointer[itimerspec]           $__value # const const itimerspec*
-                 ,Pointer[itimerspec]           $__ovalue # const itimerspec*
-                  ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:377
-#/* Get current value of timer TIMERID and store it in VALUE.  */
-#extern int timer_gettime (timer_t __timerid, struct itimerspec *__value)
-#     __THROW;
-sub timer_gettime(Pointer                       $__timerid # Typedef<timer_t>->|Typedef<__timer_t>->|void*||
-                 ,Pointer[itimerspec]           $__value # itimerspec*
-                  ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:380
-#/* Get expiration overrun for timer TIMERID.  */
-#extern int timer_getoverrun (timer_t __timerid) __THROW;
-sub timer_getoverrun(Pointer $__timerid # Typedef<timer_t>->|Typedef<__timer_t>->|void*||
-                     ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:387
-## ifdef __USE_ISOC11
-#/* Set TS to calendar time based in time base BASE.  */
-#extern int timespec_get (struct timespec *__ts, int __base)
-#     __THROW __nonnull ((1));
-sub timespec_get(Pointer[timespec]             $__ts # timespec*
-                ,int32                         $__base # int
-                 ) is native(LIB) returns int32 is export { * }
-
-#-From /usr/include/time.h:412
-#   This function is a possible cancellation point and therefore not
-#   marked with __THROW.  */
-#extern struct tm *getdate (const char *__string);
-sub getdate(Str $__string # const char*
-            ) is native(LIB) returns Pointer[tm] is export { * }
-
-#-From /usr/include/time.h:427
-#   This function is not part of POSIX and therefore no official
-#   cancellation point.  But due to similarity with an POSIX interface
-#   or due to the implementation it is a cancellation point and
-#   therefore not marked with __THROW.  */
-#extern int getdate_r (const char *__restrict __string,
-#		      struct tm *__restrict __resbufp);
-sub getdate_r(Str                           $__string # const const char*
-             ,Pointer[tm]                   $__resbufp # const tm*
-              ) is native(LIB) returns int32 is export { * }
-
-
-# == /usr/include/curl/easy.h ==
 
 #-From /usr/include/curl/easy.h:28
 #CURL_EXTERN CURL *curl_easy_init(void);
@@ -1790,16 +1432,3 @@ sub curl_easy_send(CURLPtr                       $curl # Typedef<CURL>->|void|*
                   ,size_t                        $buflen # Typedef<size_t>->|long unsigned int|
                   ,Pointer[size_t]               $n # Typedef<size_t>->|long unsigned int|*
                    ) is native(LIB) returns int32 is export { * }
-
-## Externs
-
-
-# == /usr/include/time.h ==
-
-our CArray[Str] $__tzname is export = cglobals(LIB, "__tzname", CArray[Str]);
-our int32 $__daylight is export = cglobals(LIB, "__daylight", int32);
-our long $__timezone is export = cglobals(LIB, "__timezone", long);
-our CArray[Str] $tzname is export = cglobals(LIB, "tzname", CArray[Str]);
-our int32 $daylight is export = cglobals(LIB, "daylight", int32);
-our long $timezone is export = cglobals(LIB, "timezone", long);
-our int32 $getdate_err is export = cglobals(LIB, "getdate_err", int32);
