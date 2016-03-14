@@ -281,7 +281,7 @@ multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw
 
 # CURLcode curl_easy_setopt(CURL *handle, CURLoption option, parameter); 
 # CURLcode - status codes
-multi sub curl_easy_setopt(OpaquePointer $point, uint16 $code, Str $value) returns uint8 is export {
+multi sub curl_easy_setopt(OpaquePointer $point, Int:D $code, Str $value) returns uint8 is export {
 
     return _curl_easy_setopt($point, $code, $value);
 }
