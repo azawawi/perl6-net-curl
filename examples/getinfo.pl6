@@ -14,16 +14,16 @@ my $res = curl_easy_perform($curl);
 
 if CURLE_OK == $res {
 
-	# ask for the content-type
-	my $ct = CArray[Str].new;
-	$ct[0] = '';
-	$res = curl_easy_getinfo($curl, CURLINFO_CONTENT_TYPE, $ct);
+  # ask for the content-type
+  my $ct = CArray[Str].new;
+  $ct[0] = '';
+  $res = curl_easy_getinfo($curl, CURLINFO_CONTENT_TYPE, $ct);
 
-    if (CURLE_OK == $res) && $ct {
-        printf("We received Content-Type: %s\n", $ct[0]);
-    }
+  if (CURLE_OK == $res) && $ct {
+    printf("We received Content-Type: %s\n", $ct[0]);
+  }
 
-    # always cleanup
-    curl_easy_cleanup($curl);
+  # always cleanup
+  curl_easy_cleanup($curl);
 }
 
