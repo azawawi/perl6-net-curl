@@ -2,7 +2,7 @@
 use v6;
 
 use lib 'lib';
-use Net::Curl;
+use Net::Curl::NativeCall;
 
 constant SKIP_PEER_VERIFICATION      = 0;
 constant SKIP_HOSTNAME_VERIFICATION  = 0;
@@ -12,7 +12,7 @@ curl_global_init(CURL_GLOBAL_DEFAULT);
 my $curl = curl_easy_init;
 
 if $curl {
-  _curl_easy_setopt($curl, CURLOPT_URL, "https://www.google.jo/");
+  curl_easy_setopt($curl, CURLOPT_URL, "https://www.example.com/");
 
   if SKIP_PEER_VERIFICATION {
     # If you want to connect to a site who isn't using a certificate that is

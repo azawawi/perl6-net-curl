@@ -1,6 +1,6 @@
 use v6;
 
-use Net::Curl;
+use Net::Curl::NativeCall;
 
 unit class Net::Curl::Easy;
 

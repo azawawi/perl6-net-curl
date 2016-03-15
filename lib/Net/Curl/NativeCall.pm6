@@ -7,10 +7,16 @@ use NativeCall;
 ## Generated using gptrixie --all /usr/include/curl/curl.h -I /usr/include/curl/ > Generated.pm6
 ## And then modified by hand
 
-constant CURLPtr is export = Pointer;
-constant CURLMPtr is export = Pointer;
-constant CURLSHPtr is export = Pointer;
+constant LIB = "curl";
+
 constant curl_socket_t is export = uint32;
+
+constant CURL_GLOBAL_SSL       is export = (1 +< 0);
+constant CURL_GLOBAL_WIN32     is export = (1 +< 1);
+constant CURL_GLOBAL_ALL       is export = (CURL_GLOBAL_SSL +| CURL_GLOBAL_WIN32);
+constant CURL_GLOBAL_NOTHING   is export = 0;
+constant CURL_GLOBAL_DEFAULT   is export = CURL_GLOBAL_ALL;
+constant CURL_GLOBAL_ACK_EINTR is export = (1 +< 2);
 
 ## Enumerations
 
@@ -642,6 +648,14 @@ enum CURLversion is export (
    CURLVERSION_FOURTH => 3,
    CURLVERSION_LAST => 4
 );
+
+
+# Three convenient "aliases" that follow the name scheme better
+constant CURLOPT_WRITEDATA  is export = CURLOPT_FILE;
+constant CURLOPT_READDATA   is export = CURLOPT_INFILE;
+constant CURLOPT_HEADERDATA is export = CURLOPT_WRITEHEADER;
+constant CURLOPT_RTSPHEADER is export = CURLOPT_HTTPHEADER;
+
 ## Structures
 
 
@@ -653,8 +667,8 @@ class CURLMsg_data_Union is repr('CUnion') is export {
 }
 class CURLMsg is repr('CStruct') is export {
 	has int32                         $.msg; # CURLMSG msg
-	has CURLPtr                       $.easy_handle; # Typedef<CURL>->|void|* easy_handle
-	HAS CURLMsg_data_Union            $.data; # Union data
+	has Pointer                       $.easy_handle; # Typedef<CURL>->|void|* easy_handle
+	has CURLMsg_data_Union            $.data; # Union data
 }
 class curl_waitfd is repr('CStruct') is export {
 	has curl_socket_t                 $.fd; # Typedef<curl_socket_t>->|int| fd
@@ -720,7 +734,7 @@ class curl_forms is repr('CStruct') is export {
 }
 class curl_slist is repr('CStruct') is export {
 	has Str                           $.data; # char* data
-	has Pointer[curl_slist]           $.next; # curl_slist* next
+	has Pointer                       $.next; # curl_slist* next
 }
 class curl_certinfo is repr('CStruct') is export {
 	has int32                         $.num_of_certs; # int num_of_certs
@@ -763,8 +777,7 @@ class curl_version_info_data is repr('CStruct') is export {
 # * Returns: a new CURLM handle to use in all 'curl_multi' functions.
 # */
 #CURL_EXTERN CURLM *curl_multi_init(void);
-sub curl_multi_init(
-                    ) is native(LIB) returns CURLMPtr is export { * }
+sub curl_multi_init is native(LIB) returns Pointer is export { * }
 
 #-From /usr/include/curl/multi.h:124
 #/*
@@ -776,8 +789,8 @@ sub curl_multi_init(
 # */
 #CURL_EXTERN CURLMcode curl_multi_add_handle(CURLM *multi_handle,
 #                                            CURL *curl_handle);
-sub curl_multi_add_handle(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
-                         ,CURLPtr                       $curl_handle # Typedef<CURL>->|void|*
+sub curl_multi_add_handle(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
+                         ,Pointer                       $curl_handle # Typedef<CURL>->|void|*
                           ) is native(LIB) returns int32 is export { * }
 
 #-From /usr/include/curl/multi.h:134
@@ -790,8 +803,8 @@ sub curl_multi_add_handle(CURLMPtr                      $multi_handle # Typedef<
 #  */
 #CURL_EXTERN CURLMcode curl_multi_remove_handle(CURLM *multi_handle,
 #                                               CURL *curl_handle);
-sub curl_multi_remove_handle(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
-                            ,CURLPtr                       $curl_handle # Typedef<CURL>->|void|*
+sub curl_multi_remove_handle(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
+                            ,Pointer                       $curl_handle # Typedef<CURL>->|void|*
                              ) is native(LIB) returns int32 is export { * }
 
 #-From /usr/include/curl/multi.h:149
@@ -809,10 +822,10 @@ sub curl_multi_remove_handle(CURLMPtr                      $multi_handle # Typed
 #                                       fd_set *write_fd_set,
 #                                       fd_set *exc_fd_set,
 #                                       int *max_fd);
-sub curl_multi_fdset(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
-                    ,Pointer[fd_set]               $read_fd_set # fd_set*
-                    ,Pointer[fd_set]               $write_fd_set # fd_set*
-                    ,Pointer[fd_set]               $exc_fd_set # fd_set*
+sub curl_multi_fdset(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
+                    ,Pointer               $read_fd_set # fd_set*
+                    ,Pointer               $write_fd_set # fd_set*
+                    ,Pointer               $exc_fd_set # fd_set*
                     ,Pointer[int32]                $max_fd # int*
                      ) is native(LIB) returns int32 is export { * }
 
@@ -830,7 +843,7 @@ sub curl_multi_fdset(CURLMPtr                      $multi_handle # Typedef<CURLM
 #                                      unsigned int extra_nfds,
 #                                      int timeout_ms,
 #                                      int *ret);
-sub curl_multi_wait(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_wait(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
                    ,Pointer[curl_waitfd]          $extra_fds # curl_waitfd*
                    ,uint32                        $extra_nfds # unsigned int
                    ,int32                         $timeout_ms # int
@@ -856,7 +869,7 @@ sub curl_multi_wait(CURLMPtr                      $multi_handle # Typedef<CURLM>
 #  */
 #CURL_EXTERN CURLMcode curl_multi_perform(CURLM *multi_handle,
 #                                         int *running_handles);
-sub curl_multi_perform(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_perform(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
                       ,Pointer[int32]                $running_handles # int*
                        ) is native(LIB) returns int32 is export { * }
 
@@ -872,7 +885,7 @@ sub curl_multi_perform(CURLMPtr                      $multi_handle # Typedef<CUR
 #  * Returns: CURLMcode type, general multi error code.
 #  */
 #CURL_EXTERN CURLMcode curl_multi_cleanup(CURLM *multi_handle);
-sub curl_multi_cleanup(CURLMPtr $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_cleanup(Pointer $multi_handle # Typedef<CURLM>->|void|*
                        ) is native(LIB) returns int32 is export { * }
 
 #-From /usr/include/curl/multi.h:225
@@ -906,7 +919,7 @@ sub curl_multi_cleanup(CURLMPtr $multi_handle # Typedef<CURLM>->|void|*
 # */
 #CURL_EXTERN CURLMsg *curl_multi_info_read(CURLM *multi_handle,
 #                                          int *msgs_in_queue);
-sub curl_multi_info_read(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_info_read(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
                         ,Pointer[int32]                $msgs_in_queue # int*
                          ) is native(LIB) returns Pointer[CURLMsg] is export { * }
 
@@ -927,7 +940,7 @@ sub curl_multi_strerror(int32  # CURLMcode
 #-From /usr/include/curl/multi.h:282
 #CURL_EXTERN CURLMcode curl_multi_socket(CURLM *multi_handle, curl_socket_t s,
 #                                        int *running_handles);
-sub curl_multi_socket(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_socket(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
                      ,curl_socket_t                 $s # Typedef<curl_socket_t>->|int|
                      ,Pointer[int32]                $running_handles # int*
                       ) is native(LIB) returns int32 is export { * }
@@ -937,7 +950,7 @@ sub curl_multi_socket(CURLMPtr                      $multi_handle # Typedef<CURL
 #                                               curl_socket_t s,
 #                                               int ev_bitmask,
 #                                               int *running_handles);
-sub curl_multi_socket_action(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_socket_action(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
                             ,curl_socket_t                 $s # Typedef<curl_socket_t>->|int|
                             ,int32                         $ev_bitmask # int
                             ,Pointer[int32]                $running_handles # int*
@@ -946,7 +959,7 @@ sub curl_multi_socket_action(CURLMPtr                      $multi_handle # Typed
 #-From /usr/include/curl/multi.h:290
 #CURL_EXTERN CURLMcode curl_multi_socket_all(CURLM *multi_handle,
 #                                            int *running_handles);
-sub curl_multi_socket_all(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_socket_all(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
                          ,Pointer[int32]                $running_handles # int*
                           ) is native(LIB) returns int32 is export { * }
 
@@ -962,7 +975,7 @@ sub curl_multi_socket_all(CURLMPtr                      $multi_handle # Typedef<
 # */
 #CURL_EXTERN CURLMcode curl_multi_timeout(CURLM *multi_handle,
 #                                         long *milliseconds);
-sub curl_multi_timeout(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_timeout(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
                       ,Pointer[long]                 $milliseconds # long int*
                        ) is native(LIB) returns int32 is export { * }
 
@@ -976,7 +989,7 @@ sub curl_multi_timeout(CURLMPtr                      $multi_handle # Typedef<CUR
 # */
 #CURL_EXTERN CURLMcode curl_multi_setopt(CURLM *multi_handle,
 #                                        CURLMoption option, ...);
-sub curl_multi_setopt(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_setopt(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
                      ,int32                         $option # CURLMoption
                       ) is native(LIB) returns int32 is export { * }
 
@@ -992,7 +1005,7 @@ sub curl_multi_setopt(CURLMPtr                      $multi_handle # Typedef<CURL
 # */
 #CURL_EXTERN CURLMcode curl_multi_assign(CURLM *multi_handle,
 #                                        curl_socket_t sockfd, void *sockp);
-sub curl_multi_assign(CURLMPtr                      $multi_handle # Typedef<CURLM>->|void|*
+sub curl_multi_assign(Pointer                      $multi_handle # Typedef<CURLM>->|void|*
                      ,curl_socket_t                 $sockfd # Typedef<curl_socket_t>->|int|
                      ,Pointer                       $sockp # void*
                       ) is native(LIB) returns int32 is export { * }
@@ -1100,7 +1113,7 @@ sub curl_version(
 #CURL_EXTERN char *curl_easy_escape(CURL *handle,
 #                                   const char *string,
 #                                   int length);
-sub curl_easy_escape(CURLPtr                       $handle # Typedef<CURL>->|void|*
+sub curl_easy_escape(Pointer                       $handle # Typedef<CURL>->|void|*
                     ,Str                           $string # const char*
                     ,int32                         $length # int
                      ) is native(LIB) returns Str is export { * }
@@ -1129,7 +1142,7 @@ sub curl_escape(Str                           $string # const char*
 #                                     const char *string,
 #                                     int length,
 #                                     int *outlength);
-sub curl_easy_unescape(CURLPtr                       $handle # Typedef<CURL>->|void|*
+sub curl_easy_unescape(Pointer                       $handle # Typedef<CURL>->|void|*
                       ,Str                           $string # const char*
                       ,int32                         $length # int
                       ,Pointer[int32]                $outlength # int*
@@ -1257,17 +1270,17 @@ sub curl_getdate(Str                           $p # const char*
 #-From /usr/include/curl/curl.h:2149
 #CURL_EXTERN CURLSH *curl_share_init(void);
 sub curl_share_init(
-                    ) is native(LIB) returns CURLSHPtr is export { * }
+                    ) is native(LIB) returns Pointer is export { * }
 
 #-From /usr/include/curl/curl.h:2150
 #CURL_EXTERN CURLSHcode curl_share_setopt(CURLSH *, CURLSHoption option, ...);
-sub curl_share_setopt(CURLSHPtr                      # Typedef<CURLSH>->|void|*
+sub curl_share_setopt(Pointer                      # Typedef<CURLSH>->|void|*
                      ,int32                         $option # CURLSHoption
                       ) is native(LIB) returns int32 is export { * }
 
 #-From /usr/include/curl/curl.h:2151
 #CURL_EXTERN CURLSHcode curl_share_cleanup(CURLSH *);
-sub curl_share_cleanup(CURLSHPtr  # Typedef<CURLSH>->|void|*
+sub curl_share_cleanup(Pointer  # Typedef<CURLSH>->|void|*
                        ) is native(LIB) returns int32 is export { * }
 
 #-From /usr/include/curl/curl.h:2226
@@ -1322,29 +1335,97 @@ sub curl_share_strerror(int32  # CURLSHcode
 # *
 # */
 #CURL_EXTERN CURLcode curl_easy_pause(CURL *handle, int bitmask);
-sub curl_easy_pause(CURLPtr                       $handle # Typedef<CURL>->|void|*
+sub curl_easy_pause(Pointer                       $handle # Typedef<CURL>->|void|*
                    ,int32                         $bitmask # int
                     ) is native(LIB) returns int32 is export { * }
 
 #-From /usr/include/curl/easy.h:28
 #CURL_EXTERN CURL *curl_easy_init(void);
 sub curl_easy_init(
-                   ) is native(LIB) returns CURLPtr is export { * }
+                   ) is native(LIB) returns Pointer is export { * }
 
 #-From /usr/include/curl/easy.h:29
 #CURL_EXTERN CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...);
-sub curl_easy_setopt(CURLPtr                       $curl # Typedef<CURL>->|void|*
+# TODO Waiting for multiple signatures
+sub curl_easy_setopt_str(Pointer                       $curl # Typedef<CURL>->|void|*
                     ,int32                         $option # CURLoption
-                     ) is native(LIB) returns int32 is export { * }
+                    ,Str                           $value
+                     ) is native(LIB) is symbol('curl_easy_setopt')
+                     returns int32 { * }
+
+# TODO Waiting for multiple signatures
+sub curl_easy_setopt_int32(Pointer                       $curl # Typedef<CURL>->|void|*
+                   ,int32                          $option # CURLoption
+                   ,int32                          $value
+                   ) is native(LIB) is symbol('curl_easy_setopt')
+                   returns int32 { * }
+
+# TODO Waiting for multiple signatures
+my sub curl_easy_setopt_cb(OpaquePointer, uint32, &cb (Pointer $ptr, uint32 $size, uint32 $nmemb, OpaquePointer $stream --> uint32))
+  returns uint32
+  is native(LIB)
+  is symbol('curl_easy_setopt') { ... }
+
+# Pass an empty buffer or string and returns it with data filled after curl_easy_perform()
+# On Str type it will decode the buffer to latin1
+# For Buf type you must decode it manualy. For example my $buf = Buf.new(); `perform` my Str $s = $buf.decode('utf-8')
+# curl_easy_setopt( $curl, CURLOPT_WRITEDATA, Str $body is rw );
+# curl_easy_setopt( $curl, CURLOPT_WRITEDATA, Buf $body is rw );
+# curl_easy_setopt( $curl, CURLOPT_WRITEDATA, IO::Handle $body is rw ); # you must close your FH
+# TODO add ref to function ( $value )
+multi sub curl_easy_setopt(OpaquePointer $point, CURLOPT_WRITEDATA, $value is rw) returns int32 is export {
+
+  die "Invalid type to write data to. Use Str|Buf|IO::Handle" if $value !~~ Str|Buf|IO::Handle ;
+
+  my Bool $is_str   = $value ~~ Str ;
+  my Bool $is_file  = $value ~~ IO::Handle;
+  my Bool $is_buf   = $value ~~ Buf ;
+
+  $value = Buf.new if $is_buf;
+  $value = ''      if $is_str;
+
+  # size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
+  sub callback( Pointer $ptr , uint32 $size, uint32 $nmemb, OpaquePointer $wtf --> uint32 ) {
+
+    my $bytes = nativecast( CArray[int8], $ptr ) ;
+    my $buf   = Buf.new( $bytes[0..($size*$nmemb-1)] );
+
+    $buf    = $buf.decode('latin1') if $is_str ;# TODO in the future process encodings ?
+
+    if $is_buf || $is_str {
+      $value ~= $buf ;
+    }
+    elsif $is_file {
+      $value.write( $buf );
+    }
+
+    CATCH {
+      warn "Failed to process chunk";
+      warn $_;
+    }
+
+    return $size * $nmemb;
+  }
+
+  return curl_easy_setopt_cb($point, CURLOPT_WRITEFUNCTION, &callback);
+}
+
+multi sub curl_easy_setopt(Pointer $curl, Int $option, Str $value) is export {
+  return curl_easy_setopt_str($curl, $option, $value);
+}
+
+multi sub curl_easy_setopt(Pointer $curl, Int $option, Int $value) is export {
+  return curl_easy_setopt_int32($curl, $option, $value);
+}
 
 #-From /usr/include/curl/easy.h:30
 #CURL_EXTERN CURLcode curl_easy_perform(CURL *curl);
-sub curl_easy_perform(CURLPtr $curl # Typedef<CURL>->|void|*
+sub curl_easy_perform(Pointer $curl # Typedef<CURL>->|void|*
                       ) is native(LIB) returns int32 is export { * }
 
 #-From /usr/include/curl/easy.h:31
 #CURL_EXTERN void curl_easy_cleanup(CURL *curl);
-sub curl_easy_cleanup(CURLPtr $curl # Typedef<CURL>->|void|*
+sub curl_easy_cleanup(Pointer $curl # Typedef<CURL>->|void|*
                       ) is native(LIB)  is export { * }
 
 #-From /usr/include/curl/easy.h:46
@@ -1362,7 +1443,7 @@ sub curl_easy_cleanup(CURLPtr $curl # Typedef<CURL>->|void|*
 # * transfer is completed.
 # */
 #CURL_EXTERN CURLcode curl_easy_getinfo(CURL *curl, CURLINFO info, ...);
-sub curl_easy_getinfo(CURLPtr                       $curl # Typedef<CURL>->|void|*
+sub curl_easy_getinfo(Pointer                       $curl # Typedef<CURL>->|void|*
                      ,int32                         $info # CURLINFO
                       ) is native(LIB) returns int32 is export { * }
 
@@ -1380,8 +1461,8 @@ sub curl_easy_getinfo(CURLPtr                       $curl # Typedef<CURL>->|void
 # * curl_easy_setopt() invokes in every thread.
 # */
 #CURL_EXTERN CURL* curl_easy_duphandle(CURL *curl);
-sub curl_easy_duphandle(CURLPtr $curl # Typedef<CURL>->|void|*
-                        ) is native(LIB) returns CURLPtr is export { * }
+sub curl_easy_duphandle(Pointer $curl # Typedef<CURL>->|void|*
+                        ) is native(LIB) returns Pointer is export { * }
 
 #-From /usr/include/curl/easy.h:74
 #/*
@@ -1396,7 +1477,7 @@ sub curl_easy_duphandle(CURLPtr $curl # Typedef<CURL>->|void|*
 # * cookies.
 # */
 #CURL_EXTERN void curl_easy_reset(CURL *curl);
-sub curl_easy_reset(CURLPtr $curl # Typedef<CURL>->|void|*
+sub curl_easy_reset(Pointer $curl # Typedef<CURL>->|void|*
                     ) is native(LIB)  is export { * }
 
 #-From /usr/include/curl/easy.h:85
@@ -1410,7 +1491,7 @@ sub curl_easy_reset(CURLPtr $curl # Typedef<CURL>->|void|*
 # */
 #CURL_EXTERN CURLcode curl_easy_recv(CURL *curl, void *buffer, size_t buflen,
 #                                    size_t *n);
-sub curl_easy_recv(CURLPtr                       $curl # Typedef<CURL>->|void|*
+sub curl_easy_recv(Pointer                       $curl # Typedef<CURL>->|void|*
                   ,Pointer                       $buffer # void*
                   ,size_t                        $buflen # Typedef<size_t>->|long unsigned int|
                   ,Pointer[size_t]               $n # Typedef<size_t>->|long unsigned int|*
@@ -1427,7 +1508,7 @@ sub curl_easy_recv(CURLPtr                       $curl # Typedef<CURL>->|void|*
 # */
 #CURL_EXTERN CURLcode curl_easy_send(CURL *curl, const void *buffer,
 #                                    size_t buflen, size_t *n);
-sub curl_easy_send(CURLPtr                       $curl # Typedef<CURL>->|void|*
+sub curl_easy_send(Pointer                       $curl # Typedef<CURL>->|void|*
                   ,Pointer                       $buffer # const void*
                   ,size_t                        $buflen # Typedef<size_t>->|long unsigned int|
                   ,Pointer[size_t]               $n # Typedef<size_t>->|long unsigned int|*

@@ -2,11 +2,11 @@
 use v6;
 
 use lib 'lib';
-use Net::Curl;
+use Net::Curl::NativeCall;
 
 my $curl = curl_easy_init;
 if $curl {
-  _curl_easy_setopt($curl, CURLOPT_URL, 'http://example.com');
+  curl_easy_setopt($curl, CURLOPT_URL, 'http://example.com');
 
   # Perform the request, res will get the return code
   my $res = curl_easy_perform($curl);
