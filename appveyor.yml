@@ -12,7 +12,7 @@ install:
   - rakudobrew build moar 2016.02
   - rakudobrew build zef
   - cd %APPVEYOR_BUILD_FOLDER%
-  - zef install --depsonly .
+  - zef --depsonly install .
 
 build: off
 
