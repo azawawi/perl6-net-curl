@@ -7,7 +7,7 @@ os:
   - osx
 
 perl6:
-  - 2016.02
+  - 2016.03
   - latest
 
 install:
@@ -19,6 +19,6 @@ install:
   - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then ls /usr/local/lib/                   ; fi
   - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then ls /usr/lib/                         ; fi
   - rakudobrew build panda
-  - panda installdeps .
+  - panda --verbose installdeps .
 
 script: NETWORK_TESTING=1 prove -v -e "perl6 -Ilib" t/
