@@ -1360,6 +1360,12 @@ sub curl_easy_setopt_int32(Pointer                       $curl # Typedef<CURL>->
                    ) is native(LIB) is symbol('curl_easy_setopt')
                    returns int32 { * }
 
+sub curl_easy_setopt_pointer(Pointer                       $curl # Typedef<CURL>->|void|*
+                   ,int32                          $option # CURLoption
+                   ,Pointer                        $value
+                   ) is native(LIB) is symbol('curl_easy_setopt')
+                   returns int32 { * }
+
 # TODO Waiting for multiple signatures
 my sub curl_easy_setopt_cb(OpaquePointer, uint32, &cb (Pointer $ptr, uint32 $size, uint32 $nmemb, OpaquePointer $stream --> uint32))
   returns uint32
@@ -1416,6 +1422,10 @@ multi sub curl_easy_setopt(Pointer $curl, Int $option, Str $value) is export {
 
 multi sub curl_easy_setopt(Pointer $curl, Int $option, Int $value) is export {
   return curl_easy_setopt_int32($curl, $option, $value);
+}
+
+multi sub curl_easy_setopt(Pointer $curl, Int $option, Pointer $value) is export {
+  return curl_easy_setopt_pointer($curl, $option, $value);
 }
 
 #-From /usr/include/curl/easy.h:30
