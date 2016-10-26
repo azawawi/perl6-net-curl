@@ -1,4 +1,5 @@
 {
+  "perl"        : "6.*",
   "name"        : "Net::Curl",
   "version"     : "*",
   "description" : "Perl 6 interface to libcurl, the free and easy-to-use client-side URL transfer library",
