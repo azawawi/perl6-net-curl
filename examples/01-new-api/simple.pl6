@@ -1,22 +1,17 @@
 #!/usr/bin/env perl6
 use v6;
 
-# Not yet implemented
+# TODO Implement new API
 
 use lib 'lib';
 use Net::Curl::API;
 
-my $curl = Net::Curl::API.new;
-$curl.option(CURLOPT_URL, "http://example.com");
-$curl.perform;
+given my $curl = Net::Curl::API.new {
+    .option(CURLOPT_URL, "http://example.com");
+    .perform;
 
-CATCH {
-  when X:Net::Curl::Failure {
-    die $_;
-  }
-}
-
-LEAVE {
-  # Always cleanup
-  $curl.cleanup if $curl;
+    LEAVE {
+      # Always cleanup
+      .cleanup if $_;
+    }
 }
