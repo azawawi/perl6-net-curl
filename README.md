@@ -30,14 +30,12 @@ $ sudo apt-get install libcurl3-dev
 
 * On Mac OS X, Please use the following command:
 ```
-$ brew update
 $ brew install curl
 ```
 
-* Using panda (a module management tool bundled with Rakudo Star):
+* Using zef (a module management tool bundled with Rakudo Star):
 ```
-$ panda update
-$ panda install Net::Curl
+$ zef install Net::Curl
 ```
 
 ## Testing

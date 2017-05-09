@@ -18,7 +18,12 @@ install:
   - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then brew install curl                    ; fi
   - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then ls /usr/local/lib/                   ; fi
   - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then ls /usr/lib/                         ; fi
-  - rakudobrew build panda
-  - panda --verbose installdeps .
+  - zef --depsonly install .
+  - zef install Test::META
+  - zef build .
 
-script: NETWORK_TESTING=1 prove -v -e "perl6 -Ilib" t/
+script:  prove -v -e "perl6 -Ilib" t/
+
+script:
+    - AUTHOR_TESTING=1 NETWORK_TESTING=1 prove -ve "perl6 -Ilib"
+    - zef install .
