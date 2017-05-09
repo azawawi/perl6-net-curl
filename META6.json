@@ -1,14 +1,24 @@
 {
-  "name"        : "Net::Curl",
-  "license"     : "MIT",
-  "version"     : "0.1.0",
-  "perl"        : "6.c",
-  "description" : "Perl 6 interface to libcurl, the free and easy-to-use client-side URL transfer library",
-  "depends"     : [ ],
-  "provides"    : {
-    "Net::Curl"             : "lib/Net/Curl.pm6",
-    "Net::Curl::Easy"       : "lib/Net/Curl/Easy.pm6",
-    "Net::Curl::NativeCall" : "lib/Net/Curl/NativeCall.pm6"
-  },
-  "source-url"  : "git://github.com/azawawi/perl6-net-curl.git"
+    "auth"        : "github:azawawi",
+    "authors"     : [ "Ahmad M. Zawawi" ],
+    "description" : "Perl 6 interface to libcurl, the free and easy-to-use client-side URL transfer library",
+    "depends"     : [ ],
+    "license"     : "MIT",
+    "name"        : "Net::Curl",
+    "perl"        : "6.*",
+    "provides"    : {
+        "Net::Curl"             : "lib/Net/Curl.pm6",
+        "Net::Curl::Easy"       : "lib/Net/Curl/Easy.pm6",
+        "Net::Curl::NativeCall" : "lib/Net/Curl/NativeCall.pm6"
+    },
+    "source-url"  : "git://github.com/azawawi/perl6-net-curl.git",
+    "tags"          : [
+        "libcurl",
+        "Net",
+        "NativeCall"
+    ],
+    "test-depends"  : [
+        "Test"
+    ],
+    "version"     : "0.1.0"
 }
