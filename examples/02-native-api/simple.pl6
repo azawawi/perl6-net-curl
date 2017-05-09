@@ -13,7 +13,7 @@ if $curl {
 
   # Check for errors
   if $res {
-    say "Error: curl_easy_perform() failed: {curl_easy_strerror($res)}";
+    say "Error: curl_easy_perform failed: {curl_easy_strerror($res)}";
   }
 
   # always cleanup

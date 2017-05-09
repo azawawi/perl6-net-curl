@@ -8,7 +8,7 @@ use Net::Curl::NativeCall;
 curl_global_init(CURL_GLOBAL_ALL);
 
 # get a curl handle
-my $curl = curl_easy_init();
+my $curl = curl_easy_init;
 if $curl {
     # First set the URL that is about to receive our POST. This URL can
     # just as well be a https:// URL if that is what should receive the

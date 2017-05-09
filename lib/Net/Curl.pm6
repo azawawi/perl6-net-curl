@@ -213,7 +213,7 @@ constant CURLOPT_SSL_OPTIONS is export          = 216;
 constant CURLOPT_MAIL_AUTH is export            = 10217;
 
 # Start a libcurl easy session 
-sub curl_easy_init() 
+sub curl_easy_init
 	returns OpaquePointer
 	is native(LIB)
 	is export { ... };
@@ -241,9 +241,9 @@ my sub _curl_easy_setopt_cb(OpaquePointer, uint32, &cb (Pointer $ptr, uint32 $si
     is native(LIB)
     is symbol('curl_easy_setopt') { ... }
 
-# Pass an empty buffer or string and returns it with data filled after curl_easy_perform()
+# Pass an empty buffer or string and returns it with data filled after curl_easy_perform
 # On Str type it will decode the buffer to latin1
-# For Buf type you must decode it manualy. For example my $buf = Buf.new(); `perform` my Str $s = $buf.decode('utf-8')
+# For Buf type you must decode it manualy. For example my $buf = Buf.new; `perform` my Str $s = $buf.decode('utf-8')
 # curl_easy_setopt( $curl, CURLOPT_WRITEDATA, Str $body is rw );
 # curl_easy_setopt( $curl, CURLOPT_WRITEDATA, Buf $body is rw );
 # curl_easy_setopt( $curl, CURLOPT_WRITEDATA, IO::Handle $body is rw ); # you must close your FH
@@ -311,7 +311,7 @@ sub curl_easy_strerror(uint8)
 	is export { ... };
 
 # Return the libcurl version string
-sub curl_easy_version()
+sub curl_easy_version
 	returns Str
 	is native(LIB)
 	is export { ... };
